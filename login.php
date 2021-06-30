@@ -68,7 +68,12 @@ if ($user != null) {
                 <label class="form-check-label" for="rememberMeCheck">Remember Me</label>
             </div>
             <button type="submit" class="btn btn-outline-primary">Login</button>
+        </div>
     </form>
+
+    <div class="form-signin mt-3 d-flex justify-content-center">
+        <p class="mb-0">Don't have an account? <a href="register.php" class="link-primary">SignUp</a></p>
+    </div>
 </body>
 
 </html>
