@@ -10,11 +10,11 @@
         </div>
         <hr>
         <div class="d-grid mb-3">
-            <div class="form-floating was-validated">
+            <div class="form-floating <?php echo $nameError?>">
                 <input type="text" class="form-control" id="floatingUsername" name="Username" placeholder="Name" required>
                 <label for="floatingInput">Username</label>
             </div>
-            <div class="form-floating was-validated">
+            <div class="form-floating <?php echo $passwordError?>">
                 <input type="password" class="form-control" id="floatingPassword" name="Username" placeholder="Password" required>
                 <label for="floatingPassword">Password</label>
             </div>

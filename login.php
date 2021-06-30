@@ -42,7 +42,7 @@ if ($user != null) {
 <html>
 
 <body>
-    <form class="form-signin needs-validation" action="" method="post" novalidate>
+    <form class="form-signin" action="" method="post" novalidate>
         <div>
             <h1 class="h3 mb-3 fw-normal">Welcome</h1>
         </div>
