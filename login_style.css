@@ -1,0 +1,47 @@
+:root {
+    --black: #302B27;
+    --white: #F5F3F5;
+    --openblue: #576CA8;
+    --darkblue: #1B264F;
+    --blue: #274690;
+}
+
+body {
+    background-image: url('woodBackground.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+form {
+    padding: 10px;
+    border-radius: 3px;
+    border: 1px solid #adadad;
+    background-color: white;
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+}
+
+.form-signin .form-floating:focus-within {
+    z-index: 2;
+}
+
+.button {
+    padding: 10px;
+}
+
+.form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
