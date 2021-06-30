@@ -44,7 +44,7 @@ if ($user != null) {
                 <label for="floatingInput">Username</label>
             </div>
             <div class="form-floating">
-                <input type="password" class="form-control" id="floatingPassword" name="Username" placeholder="Password">
+                <input type="password" class="form-control" id="floatingPassword" name="Password" placeholder="Password">
                 <label for="floatingPassword">Password</label>
             </div>
         </div>
