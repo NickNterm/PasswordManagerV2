@@ -4,18 +4,18 @@
 <html>
 
 <body>
-    <form class="form-signin" action="" method="post">
+    <form class="form-signin needs-validation" action="" method="post" novalidate>
         <div>
             <h1 class="h3 mb-3 fw-normal">Welcome</h1>
         </div>
         <hr>
         <div class="d-grid mb-3">
-            <div class="form-floating">
-                <input type="text" class="form-control" id="floatingUsername" name="Username" placeholder="Name">
+            <div class="form-floating was-validated">
+                <input type="text" class="form-control" id="floatingUsername" name="Username" placeholder="Name" required>
                 <label for="floatingInput">Username</label>
             </div>
-            <div class="form-floating">
-                <input type="password" class="form-control" id="floatingPassword" name="Username" placeholder="Password">
+            <div class="form-floating was-validated">
+                <input type="password" class="form-control" id="floatingPassword" name="Username" placeholder="Password" required>
                 <label for="floatingPassword">Password</label>
             </div>
             <button type="submit" class="btn btn-outline-primary">Login</button>

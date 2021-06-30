@@ -1,10 +1,10 @@
 <?php
 include 'connection.php';
-
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+$nameError = $passwordError = "";
 $user = $_POST['Username'];
 settype($user, "string");
 $user = str_replace("'", "\"", $user);
@@ -26,11 +26,14 @@ if ($user != null) {
                 $_SESSION['username'] = $user;
                 $_SESSION['salt'] = $salt;
                 header("Location: logedin");
+            }else{
+                $passwordError = "was-validated"; 
             }
         }
+    }else{
+        $nameError = $passwordError = "was-validated"; 
     }
 }
-
 ?>
 
 <link rel="stylesheet" href="login_style.css">
@@ -39,18 +42,18 @@ if ($user != null) {
 <html>
 
 <body>
-    <form class="form-signin" action="" method="post">
+    <form class="form-signin needs-validation" action="" method="post" novalidate>
         <div>
             <h1 class="h3 mb-3 fw-normal">Welcome</h1>
         </div>
         <hr>
         <div class="d-grid mb-3">
-            <div class="form-floating">
-                <input type="text" class="form-control" id="floatingUsername" name="Username" placeholder="Name">
+            <div class="form-floating <?php echo $nameError?>">
+                <input type="text" class="form-control" id="floatingUsername" name="Username" placeholder="Name" required>
                 <label for="floatingInput">Username</label>
             </div>
-            <div class="form-floating">
-                <input type="password" class="form-control" id="floatingPassword" name="Username" placeholder="Password">
+            <div class="form-floating <?php echo $passwordError?>">
+                <input type="password" class="form-control" id="floatingPassword" name="Username" placeholder="Password" required>
                 <label for="floatingPassword">Password</label>
             </div>
             <button type="submit" class="btn btn-outline-primary">Login</button>
