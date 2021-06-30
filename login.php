@@ -11,13 +11,16 @@ $user = str_replace("'", "\"", $user);
 $pass = $_POST['Password'];
 settype($pass, "string");
 $pass = str_replace("'", "\"", $pass);
+echo("testt");
 if ($user != null) {
+    echo($user);
     $sql = "SELECT * FROM login WHERE username = '$user';";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         // output data of each row
         while ($row = $result->fetch_assoc()) {
             $salt = $row["salt"];
+            echo($salt);
             if (hash('sha256', $salt . $pass, false) === $row["password"]) {
                 $_SESSION['password'] = $pass;
                 $_SESSION['username'] = $user;
@@ -41,17 +44,17 @@ if ($user != null) {
             <h1 class="h3 mb-3 fw-normal">Welcome</h1>
         </div>
         <hr>
-        <div class="mb-3">
+        <div class="d-grid mb-3">
             <div class="form-floating">
                 <input type="text" class="form-control" id="floatingUsername" name="Username" placeholder="Name">
                 <label for="floatingInput">Username</label>
             </div>
             <div class="form-floating">
-                <input type="password" class="form-control" id="floatingPassword" name="Password" placeholder="Password">
+                <input type="password" class="form-control" id="floatingPassword" name="Username" placeholder="Password">
                 <label for="floatingPassword">Password</label>
             </div>
+            <button type="submit" class="btn btn-outline-primary">Login</button>
         </div>
-        <button type="submit" class="btn btn-primary" id="signinutton">Login</button>
     </form>
 </body>
 
