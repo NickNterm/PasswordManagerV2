@@ -2,5 +2,5 @@
 $servername = "localhost";
 $username = "root";
 $password = "iqsoft";
-$dbname = "PasswordManger";
+$dbname = "PasswordManager";
 ?>
