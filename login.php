@@ -40,7 +40,7 @@ if ($user != null) {
         <hr>
         <div class="mb-3">
             <div class="form-floating">
-                <input type="email" class="form-control" id="floatingUsername" name="Username" placeholder="Name">
+                <input type="text" class="form-control" id="floatingUsername" name="Username" placeholder="Name">
                 <label for="floatingInput">Username</label>
             </div>
             <div class="form-floating">
