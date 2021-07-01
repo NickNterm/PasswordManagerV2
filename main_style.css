@@ -1,4 +1,4 @@
-#modalName {
+#modalUsername {
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
     border-bottom: -1px;
@@ -8,4 +8,11 @@
 #hintButton {
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
+}
+
+@media screen and (min-width: 676px) {
+    .modal-dialog {
+        max-width: 350px;
+        /* New width for default modal */
+    }
 }

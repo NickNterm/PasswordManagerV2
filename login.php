@@ -1,7 +1,7 @@
 <?php
 session_start();
 if($_COOKIE["UserToken"] != null){
-    $_SESSION["token"] = $row["token"];
+    $_SESSION["token"] = $_COOKIE["UserToken"];
     header("Location: main.php");
 }
 include 'connection.php';
