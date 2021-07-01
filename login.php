@@ -1,4 +1,9 @@
 <?php
+session_start();
+if($_COOKIE["UserToken"] != null){
+    $_SESSION["token"] = $row["token"];
+    header("Location: main.php");
+}
 include 'connection.php';
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
@@ -11,27 +16,21 @@ $user = str_replace("'", "\"", $user);
 $pass = $_POST['Password'];
 settype($pass, "string");
 $pass = str_replace("'", "\"", $pass);
-$tokk = $_COOKIE["UserToken"];
-echo ("cookie is $tokk");
 if ($user != null) {
-    echo ($user);
     $sql = "SELECT * FROM login WHERE username = '$user';";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         // output data of each row
         while ($row = $result->fetch_assoc()) {
             $salt = $row["salt"];
-            echo ($salt);
             if (hash('sha256', $salt . $pass, false) === $row["password"]) {
-                $_SESSION['password'] = $pass;
-                $_SESSION['username'] = $user;
-                $_SESSION['salt'] = $salt;
+                $_SESSION["token"] = $row["token"];
                 if ($_POST['rememberMeCheck'] == 1) {
                     setcookie("UserToken", $row["token"]);
                 }else{
                     setcookie("UserToken", "");
                 }
-                header("Location: logedin");
+                header("Location: main.php");
             } else {
                 $passwordError = "was-validated";
             }
