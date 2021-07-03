@@ -26,9 +26,9 @@ if ($user != null) {
             if (hash('sha256', $salt . $pass, false) === $row["password"]) {
                 $_SESSION["token"] = $row["token"];
                 if ($_POST['rememberMeCheck'] == 1) {
-                    setcookie("UserToken", $row["token"]);
+                    setcookie("UserToken", $row["token"], time() + (10 * 365 * 24 * 60 * 60));
                 }else{
-                    setcookie("UserToken", "");
+                    setcookie("UserToken", "", time() + (10 * 365 * 24 * 60 * 60));
                 }
                 header("Location: main.php");
             } else {

@@ -1,7 +1,7 @@
 #modalUsername {
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
-    border-bottom: -1px;
+    margin-bottom: -1px;
 }
 
 #passwordInput,
@@ -10,9 +10,9 @@
     border-top-right-radius: 0px;
 }
 
-@media screen and (min-width: 676px) {
+@media screen {
     .modal-dialog {
-        max-width: 350px;
+        max-width: 400px;
         /* New width for default modal */
     }
 }

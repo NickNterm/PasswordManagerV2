@@ -8,55 +8,84 @@
 <html>
 
 <body>
-    <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" data-bs-trigger="focus" title="Dismissible popover" data-bs-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover</button>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="mainButton">Launch static backdrop modal</button>
-    <?php
-for ($x = 0; $x < sizeof($recordArrayList); $x++) {
-    echo "<button type=\"button\" class=\"btn btn-primary\" data-bs-toggle=\"modal\" data-bs-target=\"#staticBackdrop\" onclick=\"changeModal(this.id)\" id=\"$x\">Button $x</button>";
-  } 
-?>
-        <!-- Modal -->
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable">
-                <div class="modal-content">
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand">
+                <img src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top"> Bootstrap
+            </a>
+            <form class="d-flex mb-0">
+                <input class="form-control me-2" type="search" placeholder="Search" onkeyup="searchFunction()" id="searchInput" aria-label="Search">
+            </form>
+        </div>
+    </nav>
 
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle">Modal title</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body pb-0">
+    <button type="button" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="mainButton">Launch static backdrop modal</button>
+    <div id="ElementDiv">
+        <button type="button" class="btn btn-outline-secondary btn-lg m-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="1" name="ElementButton">Test</button>
+        <button type="button" class="btn btn-outline-secondary btn-lg m-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="2" name="ElementButton">another test</button>
+        <button type="button" class="btn btn-outline-secondary btn-lg m-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="3" name="ElementButton">Hellooo</button>
+        <button type="button" class="btn btn-outline-secondary btn-lg m-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="4" name="ElementButton">thereee</button>
+        <button type="button" class="btn btn-outline-secondary btn-lg m-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="5" name="ElementButton">what's up</button>
+        <button type="button" class="btn btn-outline-secondary btn-lg m-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="6" name="ElementButton">hehehe</button>
 
-                        <span class="input-group-text" id="modalUsername">Name</span>
-                        <div class="input-group mb-3">
-                            <input type="Password" class="form-control" placeholder="Password" aria-label="Password" id="passwordInput">
-                            <a tabindex="0" class="btn btn-outline-secondary" id="hintButton" role="button" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="left" title="Dismissible popover" data-bs-container="div" data-bs-content="content" style="padding-top: 6px; padding-bottom: 6px;"><i class="fas fa-user-secret" style="font-size:25px; vertical-align: middle;"></i></a>
-                        </div>
-                        <div class="alert alert-secondary mb-3 pt-2 pb-2" id="modalMoreInfo" role="alert">
-                            A simple secondary alert—check it out!
-                        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body pb-0">
+                    <span class="input-group-text" id="modalUsername">Name</span>
+                    <div class="input-group mb-3">
+                        <input type="Password" class="form-control" placeholder="Password" aria-label="Password" id="passwordInput">
+                        <a tabindex="0" class="btn btn-outline-secondary" id="hintButton" role="button" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="right" title="Dismissible popover" data-bs-container="div" data-bs-content="content" style="padding-top: 6px; padding-bottom: 6px;"><i class="fas fa-user-secret" style="font-size:25px; vertical-align: middle;"></i></a>
                     </div>
-                    <div class="modal-footer mt-0">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Understood</button>
+                    <div class="alert alert-secondary mb-3 pt-2 pb-2" id="modalMoreInfo" role="alert">
+                        <strong>More Info: </strong> A simple secondary alert—check it out!
                     </div>
+                    <div class="d-grid gap-2 mb-3">
+                        <button role="button" class="btn btn-outline-secondary text-center" id="checkButton">Check</button>
+                    </div>
+                </div>
+                <div class="modal-footer mt-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
+    </div>
+
 </body>
 <script>
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
     var popoverList = popoverTriggerList.map(function(popoverTriggerEl) {
         return new bootstrap.Popover(popoverTriggerEl)
     })
-    var list = "";
+
+    function searchFunction() {
+        var txtValue;
+        var input = document.getElementById("searchInput");
+        var filter = input.value.toUpperCase();
+        var div = document.getElementById("ElementDiv");
+        var buttons = div.getElementsByTagName("button");
+        for (i = 0; i < buttons.length; i++) {
+            txtValue = buttons[i].textContent || buttons[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                buttons[i].style.display = "";
+            } else {
+                buttons[i].style.display = "none";
+            }
+        }
+    }
 
     function changeModal(id) {
         document.getElementById('modalTitle').innerText = list[id].platform.toString();
         document.getElementById('modalUsername').innerText = list[id].username.toString();
-        document.getElementById('modalMoreInfo').innerHTML = list[id].moreinfo.toString();
+        document.getElementById('modalMoreInfo').innerHTML = "<strong>More Info: </strong>" + list[id].moreinfo.toString();
         //document.getElementById('hintButton').content[0].innerHTML = list[id].hint.toString();
     }
-    var test = "nikolas";
 </script>
 
 </html>
