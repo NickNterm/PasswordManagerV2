@@ -38,6 +38,10 @@ if ($checkResult->num_rows > 0) {
     header("Location: login.php");
 }
 
+if ($_POST["AddPasswordInput2"] === $_POST["AddPasswordInput3"] && $_POST["AddPasswordInput2"] != null) {
+    $record = new record;
+}
+
 class record
 {
     var string $platform;
@@ -89,7 +93,7 @@ class record
             ?>
             <div class="col-md-4 col-sm-1 col-lg-2 p-2">
                 <div class="d-grid gap-2" style="height:200px;">
-                    <button class="btn btn-outline-secondary"><i class="fas fa-plus fa-5x"></i></button>
+                    <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#AddModal"><i class="fas fa-plus fa-5x"></i></button>
                 </div>
             </div>
 
@@ -129,23 +133,29 @@ class record
                     <h5 class="modal-title" id="AddModalTitle">Add a new Password</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body pb-0">
-                <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Password" aria-label="Password" id="AddPasswordInput1">
+                <form>
+                    <div class="modal-body pb-0">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Username" aria-label="Password" id="AddPlatformInput" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Username" aria-label="Password" id="AddUsernameInput" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="Password" class="form-control" placeholder="Password" aria-label="Password" id="AddPasswordInput1" required>
+                        </div>
+                        <div class="input-group mb-2">
+                            <input type="Password" class="form-control" placeholder="Repeat" aria-label="Password" id="AddPasswordInput2" required>
+                        </div>
+                        <div class="mb-3 pt-2 pb-2" id="modalMoreInfo" role="alert">
+                            <textarea class="form-control mb-3" id="moreInfoTextArea" placeholder="More Info" rows="3" required></textarea>
+                            <textarea class="form-control" id="hintTextArea" placeholder="Hint" rows="2" required></textarea>
+                        </div>
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-outline-secondary text-center" id="addNewButton">Submit</button>
+                        </div>
                     </div>
-                    <div class="input-group mb-3">
-                        <input type="Password" class="form-control" placeholder="Password" aria-label="Password" id="AddPasswordInput1">
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="Password" class="form-control" placeholder="Password" aria-label="Password" id="AddPasswordInput1">
-                    </div>
-                    <div class="alert alert-secondary mb-3 pt-2 pb-2" id="modalMoreInfo" role="alert">
-                        <strong>More Info: </strong> A simple secondary alert—check it out!
-                    </div>
-                    <div class="d-grid gap-2 mb-3">
-                        <button role="button" class="btn btn-outline-secondary text-center" onclick="checkPassword()" id="checkButton">Check</button>
-                    </div>
-                </div>
+                </form>
                 <div class="modal-footer mt-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
@@ -186,7 +196,6 @@ class record
     }
 
     var list = <?php echo json_encode($recordArrayList) ?>;
-
 
     function changeModal(id) {
         selectedID = id;
