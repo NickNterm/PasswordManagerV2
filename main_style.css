@@ -1,11 +1,10 @@
-#modalUsername {
+#CheckModalUsername {
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
     margin-bottom: -1px;
 }
 
-#passwordInput,
-#hintButton {
+#CheckPasswordInput {
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
 }

@@ -16,6 +16,41 @@ if ($token === null) {
     setcookie("UserToken", "", time() + (10 * 365 * 24 * 60 * 60));
     header("Location: login.php");
 }
+
+if (isset($_POST['addNewButton'])) {
+    if (
+        $_POST["AddPasswordInput2"] === $_POST["AddPasswordInput1"]
+        && $_POST["AddPasswordInput2"] != null
+        && $_POST["AddPlatformInput"] != null
+        && $_POST["AddUsernameInput"] != null
+        && $_POST["moreInfoTextArea"] != null
+        && $_POST["hintTextArea"] != null
+    ) {
+        $record = new record;
+        $string = $_POST["AddPlatformInput"];
+        settype($string , "string");
+        $record->platform = str_replace("'", "\"", $string);
+        $string = $_POST["AddUsernameInput"];
+        settype($string , "string");
+        $record->username = str_replace("'", "\"", $string);
+        $string = $_POST["AddPasswordInput1"];
+        settype($string , "string");
+        $record->hashedpassword = hash('sha256', str_replace("'", "\"", $string), false);
+        $string = $_POST["moreInfoTextArea"];
+        settype($string , "string");
+        $record->moreinfo = str_replace("'", "\"", $string);
+        $string = $_POST["hintTextArea"];
+        settype($string , "string");
+        $record->hint = str_replace("'", "\"", $string);
+
+        $sql = "INSERT INTO data (token, platform, username, password, hint, more_info)  VALUES ('$token', '$record->platform', '$record->username', '$record->hashedpassword', '$record->hint', '$record->moreinfo')";
+        if ($conn->query($sql) === TRUE) {
+        } else {
+            echo $conn->error;
+        }
+    }
+}
+
 $recordArrayList = [];
 $sql = "SELECT * FROM data WHERE token = '$token';";
 $result = $conn->query($sql);
@@ -36,10 +71,6 @@ if ($checkResult->num_rows > 0) {
 } else {
     setcookie("UserToken", "", time() + (10 * 365 * 24 * 60 * 60));
     header("Location: login.php");
-}
-
-if ($_POST["AddPasswordInput2"] === $_POST["AddPasswordInput3"] && $_POST["AddPasswordInput2"] != null) {
-    $record = new record;
 }
 
 class record
@@ -93,7 +124,7 @@ class record
             ?>
             <div class="col-md-4 col-sm-1 col-lg-2 p-2">
                 <div class="d-grid gap-2" style="height:200px;">
-                    <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#AddModal"><i class="fas fa-plus fa-5x"></i></button>
+                    <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#AddModal" onclick="openAddModal()"><i class="fas fa-plus fa-5x"></i></button>
                 </div>
             </div>
 
@@ -133,27 +164,35 @@ class record
                     <h5 class="modal-title" id="AddModalTitle">Add a new Password</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form>
-                    <div class="modal-body pb-0">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Username" aria-label="Password" id="AddPlatformInput" required>
+                <form class="modal-body pb-0" action="" method="post">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" placeholder="Platform" id="AddPlatformInput" name="AddPlatformInput" required>
+                        <label for="AddPlatformInput">Platform</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" placeholder="Username" id="AddUsernameInput" name="AddUsernameInput" required>
+                        <label for="AddUsernameInput">Username</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="Password" class="form-control" placeholder="Password" id="AddPasswordInput1" name="AddPasswordInput1" required>
+                        <label for="AddPasswordInput1">Password</label>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <input type="Password" class="form-control" placeholder="Repeat" id="AddPasswordInput2" name="AddPasswordInput2" required>
+                        <label for="AddPasswordInput2">Repeat</label>
+                    </div>
+                    <div class="mb-3 pt-2 pb-2" id="modalMoreInfo" role="alert">
+                        <div class="form-floating">
+                            <textarea class="form-control mb-3" id="moreInfoTextArea" placeholder="More Info" style="overflow:hidden" rows="1" name="moreInfoTextArea" required> </textarea>
+                            <label for="moreInfoTextArea">More Info</label>
                         </div>
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Username" aria-label="Password" id="AddUsernameInput" required>
+                        <div class="form-floating">
+                            <textarea class="form-control" id="hintTextArea" placeholder="Hint" style="overflow:hidden" rows="1" name="hintTextArea" required> </textarea>
+                            <label for="hintTextArea">Hint</label>
                         </div>
-                        <div class="input-group mb-3">
-                            <input type="Password" class="form-control" placeholder="Password" aria-label="Password" id="AddPasswordInput1" required>
-                        </div>
-                        <div class="input-group mb-2">
-                            <input type="Password" class="form-control" placeholder="Repeat" aria-label="Password" id="AddPasswordInput2" required>
-                        </div>
-                        <div class="mb-3 pt-2 pb-2" id="modalMoreInfo" role="alert">
-                            <textarea class="form-control mb-3" id="moreInfoTextArea" placeholder="More Info" rows="3" required></textarea>
-                            <textarea class="form-control" id="hintTextArea" placeholder="Hint" rows="2" required></textarea>
-                        </div>
-                        <div class="d-grid gap-2 mb-3">
-                            <button type="submit" class="btn btn-outline-secondary text-center" id="addNewButton">Submit</button>
-                        </div>
+                    </div>
+                    <div class="d-grid gap-2 mb-3">
+                        <button type="submit" class="btn btn-outline-secondary text-center" id="addNewButton" name="addNewButton">Submit</button>
                     </div>
                 </form>
                 <div class="modal-footer mt-0">
@@ -164,7 +203,9 @@ class record
     </div>
 
 </body>
+<script src="sha256.js" type="text/javascript"></script>
 <script>
+    console.log();
     function searchFunction() {
         var txtValue;
         var input = document.getElementById("searchInput");
@@ -181,8 +222,27 @@ class record
         }
     }
 
+    $("textarea").each(function() {
+        if (this.scrollHeight > 100) {
+            this.setAttribute("style", "height:" + (this.scrollHeight + 20) + "px;overflow-y:hidden;");
+        }
+    }).on("input", function() {
+        this.style.height = "auto";
+        this.style.height = (this.scrollHeight) + "px";
+    });
+
+    function openAddModal() {
+        document.getElementById('AddPlatformInput').value = "";
+        document.getElementById('AddUsernameInput').value = "";
+        document.getElementById('AddPasswordInput1').value = "";
+        document.getElementById('AddPasswordInput2').value = "";
+        document.getElementById('moreInfoTextArea').value = "";
+        document.getElementById('hintTextArea').value = "";
+
+    }
+
     function checkPassword() {
-        if (document.getElementById('CheckPasswordInput').value == list[selectedID].hashedpassword.toString()) {
+        if (sha256(document.getElementById('CheckPasswordInput').value) == list[selectedID].hashedpassword.toString()) {
             document.getElementById('checkButton').innerText = "Correct";
             document.getElementById('checkButton').classList.add('btn-success');
             document.getElementById('checkButton').classList.remove('btn-outline-secondary');
