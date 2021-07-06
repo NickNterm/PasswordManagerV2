@@ -17,6 +17,11 @@ if ($token === null) {
     header("Location: login.php");
 }
 
+if (isset($_POST['logout'])) {
+    setcookie("UserToken", "", time() + (10 * 365 * 24 * 60 * 60));
+    header("Location: login.php");
+}
+
 if (isset($_POST['addNewButton'])) {
     if (
         $_POST["AddPasswordInput2"] === $_POST["AddPasswordInput1"]
@@ -99,6 +104,9 @@ class record
             <a class="navbar-brand">
                 <img src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top"> Bootstrap
             </a>
+            <form action="" method="post">
+                <button type="submit" class="btn btn-outline-secondary" name="logout">LogOut</button>
+            </form>
             <form class="d-flex mb-0">
                 <input class="form-control me-2" type="search" placeholder="Search" onkeyup="searchFunction()" id="searchInput" aria-label="Search">
             </form>
@@ -109,10 +117,10 @@ class record
             <?php
             for ($x = 0; $x < sizeof($recordArrayList); $x++) {
                 echo "
-                    <div class=\"col-md-4 col-sm-1 col-lg-2 p-2\">
+                    <div class=\"col-md-4 col-sm-1 col-lg-2 p-2\" id=\"element$x\" name=\"CardElement\">
                             <div class=\"card border-secondary\" style=\"height:200px;\">
                                 <div class=\"card-body p-0\">
-                                    <h5 class=\"card-header text-truncate\">" . $recordArrayList[$x]->platform . "</h5>
+                                    <h5 class=\"card-header text-truncate\" name=\"CardHeader\">" . $recordArrayList[$x]->platform . "</h5>
                                     <p class=\"card-text m-2\"style=\"overflow-y: auto; height:85px;\"><strong>More Info: </strong>" . $recordArrayList[$x]->moreinfo . "</p>
                                     <div class=\"d-grid gap-2\" >
                                         <button type=\"button\" class=\"btn btn-outline-secondary btn-lg mx-2\" data-bs-toggle=\"modal\" data-bs-target=\"#checkModal\" onclick=\"changeModal(this.id)\" id=\"$x\">Check</button>
@@ -211,13 +219,13 @@ class record
         var input = document.getElementById("searchInput");
         var filter = input.value.toUpperCase();
         var div = document.getElementById("ElementDiv");
-        var buttons = div.getElementsByTagName("button");
-        for (i = 0; i < buttons.length; i++) {
-            txtValue = buttons[i].textContent || buttons[i].innerText;
+        var elements = div.getElementsByName("CardElement");
+        for (i = 0; i < elements.length; i++) {
+            txtValue = elements[i].getElementsByName("CardHeader").textContent || elements[i].getElementsByName("CardHeader").innerText;
             if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                buttons[i].style.display = "";
+                elements[i].style.display = "";
             } else {
-                buttons[i].style.display = "none";
+                elements[i].style.display = "none";
             }
         }
     }
