@@ -33,22 +33,33 @@ if (isset($_POST['addNewButton'])) {
     ) {
         $record = new record;
         $string = $_POST["AddPlatformInput"];
-        settype($string , "string");
+        settype($string, "string");
         $record->platform = str_replace("'", "\"", $string);
         $string = $_POST["AddUsernameInput"];
-        settype($string , "string");
+        settype($string, "string");
         $record->username = str_replace("'", "\"", $string);
         $string = $_POST["AddPasswordInput1"];
-        settype($string , "string");
+        settype($string, "string");
         $record->hashedpassword = hash('sha256', str_replace("'", "\"", $string), false);
         $string = $_POST["moreInfoTextArea"];
-        settype($string , "string");
+        settype($string, "string");
         $record->moreinfo = str_replace("'", "\"", $string);
         $string = $_POST["hintTextArea"];
-        settype($string , "string");
+        settype($string, "string");
         $record->hint = str_replace("'", "\"", $string);
 
         $sql = "INSERT INTO data (token, platform, username, password, hint, more_info)  VALUES ('$token', '$record->platform', '$record->username', '$record->hashedpassword', '$record->hint', '$record->moreinfo')";
+        if ($conn->query($sql) === TRUE) {
+        } else {
+            echo $conn->error;
+        }
+    }
+}
+
+if (isset($_POST['deleteButton'])) {
+    if ($_POST['id'] != null) {
+        $id = $_POST['id'];
+        $sql = "DELETE FROM data WHERE id='$id';";
         if ($conn->query($sql) === TRUE) {
         } else {
             echo $conn->error;
@@ -70,7 +81,9 @@ if ($checkResult->num_rows > 0) {
             $element->hashedpassword = $row["password"];
             $element->moreinfo = $row["more_info"];
             $element->hint = $row["hint"];
+            $element->id = $row["id"];
             array_push($recordArrayList, $element);
+            usort($recordArrayList, "mySort");
         }
     }
 } else {
@@ -78,8 +91,14 @@ if ($checkResult->num_rows > 0) {
     header("Location: login.php");
 }
 
+function mySort($a, $b)
+{
+    return ucfirst($a->platform) > ucfirst($b->platform);
+}
+
 class record
 {
+    var string $id;
     var string $platform;
     var string $username;
     var string $hashedpassword;
@@ -117,11 +136,11 @@ class record
             <?php
             for ($x = 0; $x < sizeof($recordArrayList); $x++) {
                 echo "
-                    <div class=\"col-md-4 col-sm-1 col-lg-2 p-2\" id=\"element$x\" name=\"CardElement\">
+                    <div class=\"col-md-4 col-sm-1 col-lg-2 p-2 CardElement\">
                             <div class=\"card border-secondary\" style=\"height:200px;\">
                                 <div class=\"card-body p-0\">
-                                    <h5 class=\"card-header text-truncate\" name=\"CardHeader\">" . $recordArrayList[$x]->platform . "</h5>
-                                    <p class=\"card-text m-2\"style=\"overflow-y: auto; height:85px;\"><strong>More Info: </strong>" . $recordArrayList[$x]->moreinfo . "</p>
+                                    <h5 class=\"card-header text-truncate CardHeader\">" . $recordArrayList[$x]->platform . " <button type=\"button\" class=\"btn-close\" aria-label=\"Close\" data-bs-toggle=\"modal\" data-bs-target=\"#DeleteModal\"></button></h5>
+                                    <p class=\"card-text m-2\" style=\"overflow-y: auto; height:85px;\"><strong>More Info: </strong>" . $recordArrayList[$x]->moreinfo . "</p>
                                     <div class=\"d-grid gap-2\" >
                                         <button type=\"button\" class=\"btn btn-outline-secondary btn-lg mx-2\" data-bs-toggle=\"modal\" data-bs-target=\"#checkModal\" onclick=\"changeModal(this.id)\" id=\"$x\">Check</button>
                                     </div>
@@ -138,8 +157,9 @@ class record
 
         </div>
     </div>
+
     <!-- Modal -->
-    <div class="modal fade" id="checkModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal fade" id="checkModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="CheckModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
@@ -165,6 +185,30 @@ class record
         </div>
     </div>
 
+    <!-- Delete Modal -->
+    <div class="modal fade" id="DeleteModal" tabindex="-1" aria-labelledby="deleteModalTitle" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalTitle">Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this element?
+                </div>
+                <div class="modal-footer">
+                    <div class="container-fluid">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" onclick="deleteElement()">Delete</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Add Modal -->
     <div class="modal fade" id="AddModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
@@ -213,15 +257,14 @@ class record
 </body>
 <script src="sha256.js" type="text/javascript"></script>
 <script>
-    console.log();
     function searchFunction() {
         var txtValue;
         var input = document.getElementById("searchInput");
         var filter = input.value.toUpperCase();
-        var div = document.getElementById("ElementDiv");
-        var elements = div.getElementsByName("CardElement");
+        var elements = document.getElementsByClassName("CardElement");
         for (i = 0; i < elements.length; i++) {
-            txtValue = elements[i].getElementsByName("CardHeader").textContent || elements[i].getElementsByName("CardHeader").innerText;
+            var element = elements[i].getElementsByClassName("CardHeader")[0];
+            txtValue = element.textContent || element.innerText;
             if (txtValue.toUpperCase().indexOf(filter) > -1) {
                 elements[i].style.display = "";
             } else {
@@ -238,6 +281,21 @@ class record
         this.style.height = "auto";
         this.style.height = (this.scrollHeight) + "px";
     });
+
+    function deleteElement() {
+        console.log(list[selectedID].id);
+        $.ajax({
+            type: "POST", //type of method
+            url: "main.php", //your page
+            data: {
+                deleteButton: true,
+                id: list[selectedID].id
+            }, // passing the values
+            success: function(res) {
+                //do what you want here...
+            }
+        });
+    }
 
     function openAddModal() {
         document.getElementById('AddPlatformInput').value = "";
@@ -277,7 +335,6 @@ class record
         document.getElementById('modalMoreInfo').innerHTML = "<strong>Hint: </strong>" + list[id].hint.toString();
     }
     var selectedID = 0;
-    var test = "nikolas";
 </script>
 
 </html>
