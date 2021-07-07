@@ -4,7 +4,7 @@ setcookie("UserToken", "", time() + (10 * 365 * 24 * 60 * 60));
 $_SESSION["token"] = null;
 if($_COOKIE["UserToken"] != null){
     $_SESSION["token"] = $_COOKIE["UserToken"];
-    header("Location: main.php");
+    header("Location: logedin");
 }
 include 'connection.php';
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -32,7 +32,7 @@ if ($user != null) {
                 }else{
                     setcookie("UserToken", "", time() + (10 * 365 * 24 * 60 * 60));
                 }
-                header("Location: main.php");
+                header("Location: logedin");
             } else {
                 $passwordError = "was-validated";
             }
@@ -73,7 +73,7 @@ if ($user != null) {
     </form>
 
     <div class="form-signin mt-3 d-flex justify-content-center">
-        <p class="mb-0">Don't have an account? <a href="register.php" class="link-primary">SignUp</a></p>
+        <p class="mb-0">Don't have an account? <a href="signup" class="link-primary">SignUp</a></p>
     </div>
 </body>
 

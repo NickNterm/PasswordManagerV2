@@ -13,7 +13,7 @@ if ($_SESSION["token"] != null) {
 
 if ($token === null) {
     setcookie("UserToken", "", time() + (10 * 365 * 24 * 60 * 60));
-    header("Location: login.php");
+    header("Location: log_in");
 }
 
 if (isset($_POST['addNewButton'])) {
@@ -83,7 +83,7 @@ if ($checkResult->num_rows > 0) {
     }
 } else {
     setcookie("UserToken", "", time() + (10 * 365 * 24 * 60 * 60));
-    header("Location: login.php");
+    header("Location: log_in");
 }
 
 function mySort($a, $b)
@@ -125,7 +125,7 @@ class record
                 <div class="dropdown dropstart">
                     <button class="btn btn-light m-1 px-1" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-cog fa-lg"></i></button>
                     <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
-                        <li><a class="dropdown-item" href="login.php">Log Out</a></li>
+                        <li><a class="dropdown-item" href="log_in">Log Out</a></li>
                         <li><a class="dropdown-item" href="https://github.com/NickNterm/PasswordManagerV2">About</a></li>
                     </ul>
                 </div>

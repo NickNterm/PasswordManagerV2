@@ -26,7 +26,7 @@ if ($user != null) {
             $hashedpass = hash('sha256', $salt . $pass, false);
             $sql = "INSERT INTO login (username, password, salt, token)  VALUES ('$user', '$hashedpass', '$salt', '$token')";
             if ($conn->query($sql) === TRUE) {
-                header('Location: login.php');
+                header('Location: login');
             }
         }else{
             $passwordError = "was-validated";
