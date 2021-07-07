@@ -7,7 +7,6 @@ if ($conn->connect_error) {
 }
 
 $token = $_COOKIE["UserToken"];
-#echo "session: " . $_SESSION["token"] . " token: " . $token;
 if ($_SESSION["token"] != null) {
     $token = $_SESSION["token"];
 }
@@ -50,6 +49,7 @@ if (isset($_POST['addNewButton'])) {
 
         $sql = "INSERT INTO data (token, platform, username, password, hint, more_info)  VALUES ('$token', '$record->platform', '$record->username', '$record->hashedpassword', '$record->hint', '$record->moreinfo')";
         if ($conn->query($sql) === TRUE) {
+            header("Location: postHandler.php");
         } else {
             echo $conn->error;
         }
@@ -109,12 +109,14 @@ class record
 ?>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <link rel="stylesheet" href="main_style.css">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<script src="https://kit.fontawesome.com/93cf06ec80.js" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/93cf06ec80.js" crossorigin="anonymous"></script>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <html>
 
 <body>
@@ -124,10 +126,18 @@ class record
                 <img src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top"> Bootstrap
             </a>
             <form action="" method="post">
-                <button type="submit" class="btn btn-outline-secondary" name="logout">LogOut</button>
+                <button type="submit" class="btn btn-outline-secondary" href="login.php" name="logout">LogOut</button>
+
             </form>
             <form class="d-flex mb-0">
                 <input class="form-control me-2" type="search" placeholder="Search" onkeyup="searchFunction()" id="searchInput" aria-label="Search">
+                <div class="dropdown dropstart">
+                    <button class="btn btn-light m-1" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-cog"></i></button>
+                    <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
+                        <li><a class="dropdown-item" href="login.php">Log Out</a></li>
+                        <li><a class="dropdown-item" href="https://github.com/NickNterm/PasswordManagerV2">About</a></li>
+                    </ul>
+                </div>
             </form>
         </div>
     </nav>
@@ -137,9 +147,9 @@ class record
             for ($x = 0; $x < sizeof($recordArrayList); $x++) {
                 echo "
                     <div class=\"col-md-4 col-sm-1 col-lg-2 p-2 CardElement\">
-                            <div class=\"card border-secondary\" style=\"height:200px;\">
+                            <div class=\"card border-secondary\" style=\"height:205px;\">
                                 <div class=\"card-body p-0\">
-                                    <h5 class=\"card-header text-truncate CardHeader\">" . $recordArrayList[$x]->platform . " <button type=\"button\" class=\"btn-close\" aria-label=\"Close\" data-bs-toggle=\"modal\" data-bs-target=\"#DeleteModal\"></button></h5>
+                                    <h5 class=\"card-header text-truncate CardHeader\">" . $recordArrayList[$x]->platform . " <button type=\"button\" class=\"btn-close float-end py-1\" aria-label=\"Close\" data-bs-toggle=\"modal\" data-bs-target=\"#DeleteModal\"onclick=\"changeSelectedID(this.id)\" id=\"$x\"></button></h5>
                                     <p class=\"card-text m-2\" style=\"overflow-y: auto; height:85px;\"><strong>More Info: </strong>" . $recordArrayList[$x]->moreinfo . "</p>
                                     <div class=\"d-grid gap-2\" >
                                         <button type=\"button\" class=\"btn btn-outline-secondary btn-lg mx-2\" data-bs-toggle=\"modal\" data-bs-target=\"#checkModal\" onclick=\"changeModal(this.id)\" id=\"$x\">Check</button>
@@ -196,10 +206,10 @@ class record
                 <div class="modal-body">
                     Are you sure you want to delete this element?
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer px-0">
                     <div class="container-fluid">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-danger" onclick="deleteElement()">Delete</button>
+                        <button type="button" class="btn btn-danger float-start" onclick="deleteElement()">Delete</button>
+                        <button type="button" class="btn btn-secondary float-end" data-bs-dismiss="modal">Close</button>
                     </div>
 
                 </div>
@@ -292,7 +302,7 @@ class record
                 id: list[selectedID].id
             }, // passing the values
             success: function(res) {
-                //do what you want here...
+                window.location.href = "postHandler.php";
             }
         });
     }
@@ -304,7 +314,6 @@ class record
         document.getElementById('AddPasswordInput2').value = "";
         document.getElementById('moreInfoTextArea').value = "";
         document.getElementById('hintTextArea').value = "";
-
     }
 
     function checkPassword() {
@@ -322,6 +331,10 @@ class record
     }
 
     var list = <?php echo json_encode($recordArrayList) ?>;
+
+    function changeSelectedID(id) {
+        selectedID = id;
+    }
 
     function changeModal(id) {
         selectedID = id;

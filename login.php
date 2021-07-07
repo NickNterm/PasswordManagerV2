@@ -1,5 +1,7 @@
 <?php
 session_start();
+setcookie("UserToken", "", time() + (10 * 365 * 24 * 60 * 60));
+$_SESSION["token"] = null;
 if($_COOKIE["UserToken"] != null){
     $_SESSION["token"] = $_COOKIE["UserToken"];
     header("Location: main.php");
