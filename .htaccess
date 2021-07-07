@@ -1,0 +1,6 @@
+RewriteRule Pattern Substitution
+
+RewriteEngine on
+RewriteRule ^signup$ register.php
+RewriteRule ^log_in$ login.php
+RewriteRule ^logedin$ main.php
