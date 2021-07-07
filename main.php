@@ -16,11 +16,6 @@ if ($token === null) {
     header("Location: login.php");
 }
 
-if (isset($_POST['logout'])) {
-    setcookie("UserToken", "", time() + (10 * 365 * 24 * 60 * 60));
-    header("Location: login.php");
-}
-
 if (isset($_POST['addNewButton'])) {
     if (
         $_POST["AddPasswordInput2"] === $_POST["AddPasswordInput1"]
@@ -125,14 +120,10 @@ class record
             <a class="navbar-brand">
                 <img src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top"> Bootstrap
             </a>
-            <form action="" method="post">
-                <button type="submit" class="btn btn-outline-secondary" href="login.php" name="logout">LogOut</button>
-
-            </form>
             <form class="d-flex mb-0">
                 <input class="form-control me-2" type="search" placeholder="Search" onkeyup="searchFunction()" id="searchInput" aria-label="Search">
                 <div class="dropdown dropstart">
-                    <button class="btn btn-light m-1" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-cog"></i></button>
+                    <button class="btn btn-light m-1 px-1" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-cog fa-lg"></i></button>
                     <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
                         <li><a class="dropdown-item" href="login.php">Log Out</a></li>
                         <li><a class="dropdown-item" href="https://github.com/NickNterm/PasswordManagerV2">About</a></li>
