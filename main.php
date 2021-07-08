@@ -34,15 +34,15 @@ if (isset($_POST['addNewButton'])) {
         $record->username = str_replace("'", "\"", $string);
         $string = $_POST["AddPasswordInput1"];
         settype($string, "string");
-        $record->hashedpassword = hash('sha256', str_replace("'", "\"", $string), false);
+        $record->salt = generateRandomString(10);
+        $record->hashedpassword = hash('sha256', str_replace("'", "\"", $string).$record->salt, false);
         $string = $_POST["moreInfoTextArea"];
         settype($string, "string");
         $record->moreinfo = str_replace("'", "\"", $string);
         $string = $_POST["hintTextArea"];
         settype($string, "string");
         $record->hint = str_replace("'", "\"", $string);
-
-        $sql = "INSERT INTO data (token, platform, username, password, hint, more_info)  VALUES ('$token', '$record->platform', '$record->username', '$record->hashedpassword', '$record->hint', '$record->moreinfo')";
+        $sql = "INSERT INTO data (token, platform, username, password, password_salt, hint, more_info)  VALUES ('$token', '$record->platform', '$record->username', '$record->hashedpassword', '$record->salt', '$record->hint', '$record->moreinfo')";
         if ($conn->query($sql) === TRUE) {
             header("Location: postHandler.php");
         } else {
@@ -74,6 +74,7 @@ if ($checkResult->num_rows > 0) {
             $element->platform = $row["platform"];
             $element->username = $row["username"];
             $element->hashedpassword = $row["password"];
+            $element->salt = $row["password_salt"];
             $element->moreinfo = $row["more_info"];
             $element->hint = $row["hint"];
             $element->id = $row["id"];
@@ -91,12 +92,24 @@ function mySort($a, $b)
     return ucfirst($a->platform) > ucfirst($b->platform);
 }
 
+function generateRandomString($length = 10)
+{
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+
 class record
 {
     var string $id;
     var string $platform;
     var string $username;
     var string $hashedpassword;
+    var string $salt;
     var string $moreinfo;
     var string $hint;
 }
@@ -126,21 +139,28 @@ class record
                     <button class="btn btn-light m-1 px-1" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-cog fa-lg"></i></button>
                     <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
                         <li><a class="dropdown-item" href="log_in">Log Out</a></li>
-                        <li><a class="dropdown-item" href="https://github.com/NickNterm/PasswordManagerV2">About</a></li>
+                        <li><a class="dropdown-item" href="https://github.com/NickNterm/PasswordManagerV2" target="_blank">About</a></li>
                     </ul>
                 </div>
             </form>
         </div>
     </nav>
     <div class="container-fluid =x-3 " id="ElementDiv">
-        <div class="row">
+        <div class="row">   
             <?php
             for ($x = 0; $x < sizeof($recordArrayList); $x++) {
                 echo "
                     <div class=\"col-md-4 col-sm-1 col-lg-2 p-2 CardElement\">
                             <div class=\"card border-secondary\" style=\"height:205px;\">
                                 <div class=\"card-body p-0\">
-                                    <h5 class=\"card-header text-truncate CardHeader\">" . $recordArrayList[$x]->platform . " <button type=\"button\" class=\"btn-close float-end py-1\" aria-label=\"Close\" data-bs-toggle=\"modal\" data-bs-target=\"#DeleteModal\"onclick=\"changeSelectedID(this.id)\" id=\"$x\"></button></h5>
+                                    <div class=\"card-header CardHeader px-2\">
+                                        <div class=\"row\">
+                                            <h5 class=\"col-10 m-0 text-truncate\">" . $recordArrayList[$x]->platform . "</h5>
+                                            <div class=\"col-2\">
+                                                <button type=\"button\" class=\"btn-close float-end py-1\" aria-label=\"Close\" data-bs-toggle=\"modal\" data-bs-target=\"#DeleteModal\"onclick=\"changeSelectedID(this.id)\" id=\"$x\"></button>
+                                            </div>
+                                        </div>
+                                    </div>  
                                     <p class=\"card-text m-2\" style=\"overflow-y: auto; height:85px;\"><strong>More Info: </strong>" . $recordArrayList[$x]->moreinfo . "</p>
                                     <div class=\"d-grid gap-2\" >
                                         <button type=\"button\" class=\"btn btn-outline-secondary btn-lg mx-2\" data-bs-toggle=\"modal\" data-bs-target=\"#checkModal\" onclick=\"changeModal(this.id)\" id=\"$x\">Check</button>
@@ -164,7 +184,7 @@ class record
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="CheckModalTitle">Modal title</h5>
+                    <h5 class="modal-title text-truncate" id="CheckModalTitle">Modal title</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body pb-0">
@@ -308,9 +328,11 @@ class record
     }
 
     function checkPassword() {
-        if (sha256(document.getElementById('CheckPasswordInput').value) == list[selectedID].hashedpassword.toString()) {
+        if (sha256(document.getElementById('CheckPasswordInput').value+list[selectedID].salt.toString()) == list[selectedID].hashedpassword.toString()) {
             document.getElementById('checkButton').innerText = "Correct";
             document.getElementById('checkButton').classList.add('btn-success');
+            document.getElementById('CheckPasswordInput').disabled = true
+            document.getElementById('modalMoreInfo').innerHTML = "<strong>Password Found!</strong> > "+document.getElementById('CheckPasswordInput').value;
             document.getElementById('checkButton').classList.remove('btn-outline-secondary');
             document.getElementById('checkButton').classList.remove('btn-danger');
         } else {
@@ -332,6 +354,7 @@ class record
         document.getElementById('CheckModalTitle').innerText = list[id].platform.toString();
         document.getElementById('CheckModalUsername').innerText = list[id].username.toString();
         document.getElementById('CheckPasswordInput').value = "";
+        document.getElementById('CheckPasswordInput').disabled = false;
         document.getElementById('checkButton').innerText = "Check";
         document.getElementById('checkButton').classList.remove('btn-success');
         document.getElementById('checkButton').classList.remove('btn-danger');
