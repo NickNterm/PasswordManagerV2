@@ -2,10 +2,14 @@ import React, { useEffect } from "react";
 import { View, Text, FlatList, TouchableWithoutFeedback } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { databaseGetPostsFromToken } from "../database/database";
+import { Ionicons } from "@expo/vector-icons";
+import { NavigationContainer } from "@react-navigation/native";
 import colors from "../style/colors";
-function mainScreen(props) {
+function mainScreen({ navigation }) {
   const [postList, setPostList] = React.useState([]);
+
   var token = "";
+
   const getToken = async () => {
     try {
       const value = await AsyncStorage.getItem("token");
@@ -19,6 +23,19 @@ function mainScreen(props) {
   };
   useEffect(() => {
     getToken();
+    navigation.setOptions({
+      headerRight: (props) => (
+        <Ionicons
+          name="add"
+          size={30}
+          color="white"
+          style={{ marginEnd: 15 }}
+          onPress={() => {
+            navigation.navigate("NewPost");
+          }}
+        />
+      ),
+    });
   }, []);
   function getPostsCallback(list) {
     if (list.length == 0) {

@@ -69,3 +69,50 @@ export function databaseGetPostsFromToken(token, callback) {
       }
     });
 }
+
+export function databaseSubmitAccount(
+  platform,
+  username,
+  password,
+  moreInfo,
+  hint,
+  color,
+  callback,
+  error
+) {
+  fetch(
+    site +
+      "api/signup?platform=" +
+      platform +
+      "&username=" +
+      username +
+      "&password=" +
+      password +
+      "&moreInfo=" +
+      moreInfo +
+      "&hint=" +
+      hint +
+      "&color=" +
+      color,
+    {
+      method: "POST",
+    }
+  )
+    // Get the whole response and pass only the status and the json
+    .then((response) => {
+      const statusCode = response.status;
+      const data = response.json();
+      return Promise.all([statusCode, data]);
+    })
+    // Check the status code and call the functions accordingly
+    .then(([statusCode, data]) => {
+      if (statusCode == 200) {
+        callback();
+      } else {
+        error(data.error);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}

@@ -7,6 +7,7 @@ import signupScreen from "./source/screen/signupScreen";
 import colors from "./source/style/colors";
 import mainScreen from "./source/screen/mainScreen";
 import splashScreen from "./source/screen/splashScreen";
+import createPost from "./source/screen/createPost";
 
 const Stack = createStackNavigator();
 
@@ -50,6 +51,19 @@ export default function App() {
             headerStyle: {
               backgroundColor: colors.primary_color,
             },
+          }}
+        />
+
+        <Stack.Screen
+          name="NewPost"
+          component={createPost}
+          options={{
+            ...TransitionPresets.SlideFromRightIOS,
+            headerTintColor: "#fff",
+            headerStyle: {
+              backgroundColor: colors.primary_color,
+            },
+            title: "New Account",
           }}
         />
       </Stack.Navigator>

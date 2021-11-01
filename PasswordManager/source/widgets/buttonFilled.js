@@ -8,7 +8,9 @@ function FilledButton(props) {
       style={[
         props.style,
         {
-          backgroundColor: colors.primary_color,
+          backgroundColor: props.backgroundColor
+            ? props.backgroundColor
+            : colors.primary_color,
           width: "90%",
           alignItems: "center",
           height: 40,
